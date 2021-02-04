@@ -857,12 +857,10 @@ public:
             swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
         }
 
-        return indices.graphicsFamily.has_value() &&
-            extensionsSupported &&
-            swapChainAdequate;
+        return indices.isComplete() && extensionsSupported && swapChainAdequate;
     }	
 
-    void checkExtensionSupport() {
+    void checkExtensionSupport() {                              //Instance Extension support
         uint32_t extensionCount = 0;
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
 
@@ -876,7 +874,7 @@ public:
         }
     }
 	
-	bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
+	bool checkDeviceExtensionSupport(VkPhysicalDevice device) { //Physical Device Extension Support
         uint32_t extensionCount;
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
 
