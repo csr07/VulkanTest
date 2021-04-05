@@ -268,7 +268,8 @@ public:
         createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         createInfo.pApplicationInfo = &appInfo;
 
-        auto extensions = getRequiredExtensions();
+        //Vulkan API <--> GLFW Extensions <--> Window System
+        auto extensions = getRequiredExtensions();  
         createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
         createInfo.ppEnabledExtensionNames = extensions.data();
 
@@ -287,6 +288,7 @@ public:
             createInfo.pNext = nullptr;
         }
 
+        //Instance Extension Support (just print)
         checkExtensionSupport();
 
         //VkResult result = vkCreateInstance(&createInfo, nullptr, &instance); //or...
@@ -333,7 +335,7 @@ public:
         std::vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
-        for (const auto& device : devices) {
+        for (const auto& device : devices) {            
             if (isDeviceSuitable(device)) {
                 physicalDevice = device;
                 break;
@@ -518,7 +520,6 @@ public:
 
         VkSubpassDescription subpass{};
         subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-
         subpass.colorAttachmentCount = 1;
         subpass.pColorAttachments = &colorAttachmentRef;
 
@@ -1096,12 +1097,14 @@ public:
 
         std::vector<VkExtensionProperties> extensions(extensionCount);
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
-
-        std::cout << "Count extensions: "<<extensionCount<<"\n";
-        std::cout << "Available extensions: \n";
+        
+        std::cout << "--InstanceExtensionProperties / checkExtensionSupport--\n";
+        std::cout << "\tCount extensions: "<<extensionCount<<"\n";
+        std::cout << "\tAvailable extensions: \n";
         for (const auto& extension : extensions) {
-            std::cout << '\t' << extension.extensionName << '\n';
+            std::cout << "\t\t" << extension.extensionName << '\n';
         }
+        std::cout << '\n';
     }
 	
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device) { //Physical Device Extension Support
@@ -1117,7 +1120,7 @@ public:
             requiredExtensions.erase(extension.extensionName);
         }
 
-        return true;
+        return requiredExtensions.empty();
     }    
 
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
@@ -1164,6 +1167,14 @@ public:
             extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
         }
 
+        std::cout << "--GLFW Required Instance Extensions -- \n";
+        std::cout << "\t Count: " << glfwExtensionCount << '\n';
+        for (const auto& extension : extensions) {
+            std::cout << '\t' << extension << '\n';
+        }
+        std::cout << '\n';
+
+
         return extensions;
     }    
 
@@ -1175,11 +1186,19 @@ public:
         vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
 
         //print the available layers
-        std::cout << "Count layer: " << layerCount << "\n";
-        std::cout << "Available layers: \n";
+        std::cout << "--Validation Layer Support--\n";
+        std::cout << "\tCount layer: " << layerCount << "\n";
+        std::cout << "\tAvailable layers: \n";
         for (const auto& availableLayer : availableLayers) {
-            std::cout << '\t' << availableLayer.layerName << '\n';
+            std::cout << "\t\t" << availableLayer.layerName << '\n';
         }
+
+        //print Required Layers
+        std::cout << "\tRequired Layers:\n";
+        for (const auto& reqLayer : validationLayers) {
+            std::cout << "\t\t" << reqLayer << '\n';
+        }
+        std::cout << '\n';
 
         //check if the required Layers exist in the available layers
         for (const char* layerName : validationLayers) {
