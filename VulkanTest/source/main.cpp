@@ -61,11 +61,11 @@ const uint32_t HEIGHT = 600;
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
 const std::vector<const char*> validationLayers = {
-    "VK_LAYER_KHRONOS_validation"
+    "VK_LAYER_KHRONOS_validation" //(1) InstanceLayer / VKLayerProperties
 };
 
 const std::vector<const char*> deviceExtensions = {
-    VK_KHR_SWAPCHAIN_EXTENSION_NAME
+    VK_KHR_SWAPCHAIN_EXTENSION_NAME //(3) DeviceExtensionPropoerties / VKExtensionProperties
 };
 
 #ifdef NDEBUG
@@ -828,7 +828,7 @@ public:
 
         copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
 
-        vkDestroyBuffer(device, stagingBuffer, nullptr);
+        vkDestroyBuffer(device,    stagingBuffer, nullptr);
         vkFreeMemory(device, stagingBufferMemory, nullptr);
     }
 
@@ -1098,6 +1098,7 @@ public:
         std::vector<VkExtensionProperties> extensions(extensionCount);
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
         
+        //(2) InstanceExtensionPropoerties / VKExtensionPropoerties
         std::cout << "--InstanceExtensionProperties / checkExtensionSupport--\n";
         std::cout << "\tCount extensions: "<<extensionCount<<"\n";
         std::cout << "\tAvailable extensions: \n";
@@ -1107,16 +1108,22 @@ public:
         std::cout << '\n';
     }
 	
-	bool checkDeviceExtensionSupport(VkPhysicalDevice device) { //Physical Device Extension Support
+	bool checkDeviceExtensionSupport(VkPhysicalDevice device) { //(3)Physical Device Extension Support
+        std::cout << "--DeviceExtensionSupport--\n";
+        
         uint32_t extensionCount;
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+        std::cout << "extensionCount: " << extensionCount<<std::endl;
 
         std::vector<VkExtensionProperties> availableExtensions(extensionCount);
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
 
+        //(3) DeviceExtensionProperties / VKExtensionProperties
         std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
 
+        std::cout << "availableExtensions:" << std::endl;
         for (const auto& extension : availableExtensions) {
+            std::cout << "\t" << extension.extensionName<<std::endl;
             requiredExtensions.erase(extension.extensionName);
         }
 
@@ -1166,6 +1173,7 @@ public:
         if (enableValidationLayers) {
             extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
         }
+        //(2) InstanceExtensionPropoerties / VKExtensionPropoerties
 
         std::cout << "--GLFW Required Instance Extensions -- \n";
         std::cout << "\t Count: " << glfwExtensionCount << '\n';
