@@ -124,7 +124,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\A_PROGRAMS\Vulkan\VulkanSDK\1.2.162.0\Include;$(SolutionDir)Libraries\glfw-3.3.2.bin.WIN64\include;$(SolutionDir)Libraries\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\A_PROGRAMS\Vulkan\VulkanSDK\1.2.162.0\Include;$(SolutionDir)Libraries\glfw-3.3.2.bin.WIN64\include;$(SolutionDir)Libraries\glm;$(SolutionDir)Libraries\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
